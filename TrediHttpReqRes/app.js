@@ -1,23 +1,18 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+
+const adminRoute = require('./routes/admin');
+const shopRoute = require('./routes/shop');
 
 const app = express();
 
-// app.use((req,res,next) =>{
-//     console.log('first middleware');
-//     next();
-// })
-// app.use((req,res,next)=>{
-//     console.log('second middleware');
-//     res.send("<p>Assignment</p>");
-// })
+app.use(bodyParser.urlencoded({extended: false}));
 
-app.use('/users',(req,res,next)=>{
-    console.log('User middleware');
-    res.send('<p>Middleware to handle /users</p>')
-});
-app.use('/', (req,res,next)=>{
-    console.log('/ middleware');
-    res.send('<p>middleware to handle /</p>')
+app.use('/admin',adminRoute);
+app.use(shopRoute);
+
+app.use((req,res,next)=>{
+    res.status(404).send("<h1>Page not find!!!!</h1>");
 })
 
 app.listen(3000, () => { console.log("Server is running, press ctrl+c to stop...") })
