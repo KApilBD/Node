@@ -1,9 +1,13 @@
 require('./models/User');
+require('./models/Track');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 require("dotenv").config();
+
 const authRoutes = require('./routes/authRoutes');
+const trackRoute = require('./routes/trackRoutes');
+
 const requireAuth = require('./middlewares/requireAuth');
 
 
@@ -12,6 +16,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use(authRoutes);
+app.use(trackRoute);
 
 const mongoUri = process.env.MFLIX_DB_URI;
 
