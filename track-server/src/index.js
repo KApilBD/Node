@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 require("dotenv").config();
 const authRoutes = require('./routes/authRoutes');
+const requireAuth = require('./middlewares/requireAuth');
 
 
 const app = express();
@@ -24,8 +25,8 @@ mongoose.connection.on('error', () => {
     console.log("error connecting to mongoose instatnce");
 })
 
-app.get('/', (req, res) => {
-    res.send("Hi There!")
+app.get('/', requireAuth ,(req, res) => {
+    res.send(`Your email: ${req.user.email}`);
 });
 
-app.listen(3001, () => console.log("Server is up port!!!"))
+app.listen(3001, () => console.log("Server is up port  3001 !!!"))
