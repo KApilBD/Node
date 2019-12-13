@@ -95,6 +95,10 @@ form {
   padding: 0.5rem 2rem;
 }
 
+.centered{
+  text-align: center;
+}
+
 .mobile-nav__item a:active,
 .mobile-nav__item a:hover,
 .mobile-nav__item a.active {
