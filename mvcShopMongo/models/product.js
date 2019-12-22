@@ -13,15 +13,25 @@ module.exports = class Product {
         return db.collection('products')
             .insertOne(this)
             .then(result => {
-                console.log("Result", result);  
+                console.log("Result", result);
             })
             .catch(err => {
                 console.log(err)
             });
     }
-    // static fetchAll(cb) {
-    //     getProductsFromFile(cb);
-    // }
+    static fetchAll() {
+        const db = getDb();
+        return db.collection('peoducts')
+            .find()
+            .toArray()
+            .then(products => {
+                console.log(products);
+                return products;
+            })
+            .catch(err => {
+                console.log(err)
+            });
+    }
     // static findById(id, cb) {
     //     getProductsFromFile(products => {
     //         const product = products.find(p => p.id === id);
