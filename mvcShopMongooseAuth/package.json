@@ -18,6 +18,7 @@
     "dotenv": "^8.2.0",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
+    "express-session": "^1.17.0",
     "mongodb": "^3.4.0",
     "mongoose": "^5.8.3"
   }
