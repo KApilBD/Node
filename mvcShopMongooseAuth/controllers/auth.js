@@ -1,5 +1,6 @@
 exports.getLogin = (req, res, next) => {
-    const isLoggedIn = req
+    const isLoggedIn =  req
+    .get('Cookie') && req
     .get('Cookie')
     .split(':')[0]
     .trim()
@@ -12,6 +13,7 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-    res.setHeader('Set-Cookie', 'isLoggedIn=true; HttpOnly')
+    // res.setHeader('Set-Cookie', 'isLoggedIn=true; HttpOnly')
+    req.session.isLoggedIn = true;
     res.redirect('/');
 };
