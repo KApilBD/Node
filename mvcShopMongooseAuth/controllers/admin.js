@@ -5,7 +5,7 @@ exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
-    isAuthentivcated: req.isLoggedIn,
+    isAuthentivcated: req.session.isLoggedIn,
     editing: false
   });
 };
@@ -15,7 +15,7 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const userId = req.user._id
+  const userId = req.session.user._id
   const product = new Product({
     title: title,
     price: price,
@@ -47,7 +47,7 @@ exports.getEditProduct = (req, res, next) => {
         path: '/admin/edit-product',
         editing: editMode,
         product: product,
-        isAuthentivcated: req.isLoggedIn,
+        isAuthentivcated: req.session.isLoggedIn
       });
     });
 };
@@ -81,7 +81,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'Admin Products',
         path: '/admin/products',
-        isAuthentivcated: req.isLoggedIn,
+        isAuthentivcated: req.session.isLoggedIn
       });
     });
 };
