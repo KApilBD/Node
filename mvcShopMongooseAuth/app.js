@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const path = require('path');
 const csrf = require('csurf');
+const connectFlash = require('connect-flash');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -36,7 +37,7 @@ app.use(session({
     store: store
 }));
 app.use(csrfProtection);
-
+app.use(connectFlash());
 app.use((req, res, next) => {
     if (!req.session.user) {
         return next();
