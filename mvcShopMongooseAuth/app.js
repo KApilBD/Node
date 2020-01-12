@@ -1,7 +1,8 @@
 require("dotenv").config();
 
 const path = require('path');
-
+const csrf = require('csurf');
+const connectFlash = require('connect-flash');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -18,6 +19,7 @@ const store = new MongodbStore({
     collection: 'sessions'
 });
 
+const csrfProtection = csrf();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -34,7 +36,8 @@ app.use(session({
     saveUninitialized: false,
     store: store
 }));
-
+app.use(csrfProtection);
+app.use(connectFlash());
 app.use((req, res, next) => {
     if (!req.session.user) {
         return next();
@@ -44,6 +47,12 @@ app.use((req, res, next) => {
             req.user = user;
             next()
         }).catch(err => console.log(err));
+});
+
+app.use((req, res, next) => {
+    res.locals.isAuthentivcated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
 });
 
 app.use('/admin', adminRoutes);
