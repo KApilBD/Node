@@ -9,13 +9,17 @@ route.get('/login', authController.getLogin)
 route.post(
     '/login',
     [
-        body('email').isEmail().withMessage('Please enter the valid email address.'),
+        body('email')
+            .isEmail()
+            .withMessage('Please enter the valid email address.')
+            .normalizeEmail(),
         body('password', "Password length is not valid")
-        .isLength({ min: 5 })
-        .isAlphanumeric(),
+            .isLength({ min: 5 })
+            .isAlphanumeric()
+            .trim(),
     ]
-    , 
- authController.postLogin)
+    ,
+    authController.postLogin)
 route.post('/logout', authController.postLogout)
 route.get('/signup', authController.getSignup);
 route.post(
@@ -35,16 +39,20 @@ route.post(
                     }
                 })
 
-        }),
+        })
+        .normalizeEmail(),
     check('password', "Password should be Alphanumeric & at least 5 char")
         .isLength({ min: 5 })
-        .isAlphanumeric(),
-    check("confirmPassword").custom((value, { req }) => {
-        if (value !== req.body.password) {
-            throw new Error('Password have to match!!!');
-        }
-        return true;
-    })
+        .isAlphanumeric()
+        .trim(),
+    check("confirmPassword")
+        .trim()
+        .custom((value, { req }) => {
+            if (value !== req.body.password) {
+                throw new Error('Password have to match!!!');
+            }
+            return true;
+        })
 
     ],
     authController.postSignup);
