@@ -151,8 +151,7 @@ exports.getInvoice = (req, res, next) => {
 
     })
     pdfDoc.text("-----------------");
-    console.log(totalPrice)
-    pdfDoc.fontSize(20).text("Total Price: $"+ totalPrice)
+    pdfDoc.fontSize(20).text("Total Price: $" + totalPrice)
     pdfDoc.end();
     // const file = fs.createReadStream(invoicePath);
     // file.pipe(res);

@@ -1,5 +1,5 @@
 const Product = require('../models/product');
-
+const fileHelper = require('../util/file');
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
@@ -75,7 +75,7 @@ exports.postEditProduct = (req, res, next) => {
   const updatedImage = req.file;
   const updatedDesc = req.body.description;
 
-  
+
   // const updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedDesc, updatedPrice);
   Product.findById(prodId)
     .then(product => {
@@ -85,8 +85,9 @@ exports.postEditProduct = (req, res, next) => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
-      if(updatedImage){
-       product.imageUrl = updatedImage.path;
+      if (updatedImage) {
+        fileHelper.deleteFile(product.imageUrl);
+        product.imageUrl = updatedImage.path;
       }
       return product.save()
         .then(result => {
@@ -111,7 +112,13 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteOne({ _id: prodId, userId: req.user._id })
+  Product.findById(prodId).then(product => {
+    if (!product) {
+      return console.log("PRoduct not found")
+    }
+    fileHelper.deleteFile(product.imageUrl);
+    return Product.deleteOne({ _id: prodId, userId: req.user._id })
+  })
     .then(result => {
       res.redirect('/admin/products')
     })
