@@ -2,6 +2,7 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 const fs = require('fs');
 const path = require('path');
+const PDFDocument = require('pdfkit');
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -130,6 +131,30 @@ exports.getInvoice = (req, res, next) => {
     }
     const invoiceName = 'invoice-' + orderId + '.pdf';
     const invoicePath = path.join('data', 'invoices', invoiceName);
+    const pdfDoc = new PDFDocument();
+
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader('Content-Disposition', 'attachment; filename="' + invoiceName + '"');
+    pdfDoc.pipe(fs.createWriteStream(invoicePath));
+    pdfDoc.pipe(res);
+    pdfDoc.fontSize(26).text("Invoice", { underline: true });
+    pdfDoc.text("-----------------");
+    let totalPrice = 0;
+    order.products.forEach(prod => {
+      totalPrice += prod.quantity * prod.product.price;
+      pdfDoc.fontSize(14).text(prod.product.title +
+        " - " +
+        prod.quantity +
+        " x " +
+        "$" +
+        prod.product.price);
+
+    })
+    pdfDoc.text("-----------------");
+    pdfDoc.fontSize(20).text("Total Price: $" + totalPrice)
+    pdfDoc.end();
+    // const file = fs.createReadStream(invoicePath);
+    // file.pipe(res);
     //Don't do it syncly
     // fs.readFile(invoicePath, (err, data) => {
     //   if (err) {
@@ -139,11 +164,6 @@ exports.getInvoice = (req, res, next) => {
     //   res.setHeader('Content-Disposition', 'attachment; filename="' + invoiceName + '"');
     //   res.send(data);
     // });
-
-    const file = fs.createReadStream(invoicePath);
-    res.setHeader('Content-Type', 'application/pdf')
-    res.setHeader('Content-Disposition', 'attachment; filename="' + invoiceName + '"');
-    file.pipe(res);
 
   }).catch(err => console.log(err))
 
