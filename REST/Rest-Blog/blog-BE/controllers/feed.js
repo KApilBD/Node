@@ -6,16 +6,21 @@ const path = require('path');
 
 
 exports.getPosts = (req, res, next) => {
-    Post.find()
+    const currentPage = req.query.page || 1;
+    const perPage = 3;
+    let totalItems;
+    Post.find().countDocuments()
+        .then(count => {
+            totalItems = count;
+            return Post.find()
+                .skip((currentPage - 1) * perPage)
+                .limit(perPage)
+        })
         .then(posts => {
-            if (!posts) {
-                const error = new Error("Could not find post.");
-                error.statusCode = 404;
-                throw error;
-            }
             res.status(200).json({
-                message: "Fetshed post successfully!!!",
-                posts: posts
+                message: "Fetched post successfully!!!",
+                posts: posts,
+                totalItems: totalItems
             })
         })
         .catch(err => {
@@ -23,7 +28,7 @@ exports.getPosts = (req, res, next) => {
                 err.statusCode = 500;
             }
             next(err);
-        });
+        })
 };
 
 exports.createPosts = (req, res, next) => {
